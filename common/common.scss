@@ -1,196 +1,494 @@
+/* ============================================================================
+   AI CONVERSATIONS RIGHT SIDEBAR - THEME COMPONENT
+   Adds collapsible right sidebar with AI Memories + polished UI enhancements
+   v1.8.0 (Pass 1 bug-fix) — Dropped the left-toggle styling. This component no
+     longer injects #vc-sidebar-toggle-left (the left chevron is owned solely by
+     the "AI Sidebar Search Enhanced" component), so all #vc-sidebar-toggle-left
+     selectors are removed here to avoid dead CSS referencing a nonexistent
+     element. The RIGHT chevron (#vc-sidebar-toggle) styling is unchanged.
+     NOTE: the chat-detail/page polish below remains for now; it migrates to the
+     Pass 2 styling component.
+   ============================================================================ */
 
 /* ============================================================================
-   UI POLISH - Enhanced Title & Input Styles
+   MOBILE FIX: Disable header hide-on-scroll on AI Conversations page
+   + Prevent page bouncing/wiggling on touch
    ============================================================================ */
-   
-   body.ai-bot-conversations-page .ai-bot-conversations__input-wrapper {
-    margin-left: 0px !important;
-    margin-right: 0px !important;
-   }
 
-/* Mobile: Raise content just above sidebar chevron */
-@media (max-width: 767px) {
-    body.ai-bot-conversations-page .ai-bot-conversations__content-wrapper {
-        /* Use margin-top instead of transform to avoid creating a containing block */
-        /* Transform breaks position: fixed for child elements */
-        margin-top: -132px !important;
-        transform: none !important;
+/* Disable overscroll bounce and fix scroll slack */
+html.ai-bot-conversations-page,
+body.ai-bot-conversations-page {
+    /* Disable the "elastic bounce" effect on mobile */
+    overscroll-behavior-y: none !important;
+
+    /* Disable pull-to-refresh if it causes unwanted shifts */
+   touch-action: pan-x pan-y;
+}
+
+body.ai-bot-conversations-page {
+
+    /* Keep header visible even when Discourse tries to hide it */
+    &.f-nav-hidden .d-header-wrap {
+        animation: none !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        z-index: 1000 !important;
+        pointer-events: auto !important;
     }
+
+    /* Remove 56px bottom padding that creates unnecessary scroll slack */
+    padding-bottom: 0 !important;
 }
 
-/* Desktop: Center input box vertically with right sidebar toggle */
-@media (min-width: 768px) {
-    body.ai-bot-conversations-page .ai-bot-conversations__content-wrapper {
-        /* Shift entire content block up by 124px to align input with toggle */
-        transform: translateY(-124px);
-    }
-}
+:root {
+    /* Primary Orange Palette - Polished */
+    --vc-orange: #ff7a00;
+    --vc-orange-soft: #ff8533;
+    --vc-orange-glow: #ff9d4d;
+    --vc-orange-alpha-08: rgba(255, 133, 51, 0.08);
+    --vc-orange-alpha-18: rgba(255, 133, 51, 0.18);
+    --vc-orange-alpha-30: rgba(255, 133, 51, 0.3);
 
-/* Polished title with gradient */
-body.ai-bot-conversations-page .ai-bot-conversations__title {
-    font-size: 1.85rem;
-    font-weight: 700;
-    letter-spacing: -0.025em;
-    line-height: 1.15;
-    background: linear-gradient(135deg, var(--vc-orange) 0%, var(--vc-orange-glow) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    text-shadow: none;
-    margin: 16px 0 12px;
-    padding-inline: 16px;
-    transition: opacity 0.2s ease;
-}
+    /* Text Colors */
+    --vc-text: #1f2937;
+    --vc-text-soft: #374151;
+    --vc-text-muted: #6b7280;
+    --vc-text-light: #9ca3af;
 
-/* Large textarea wrapper - Google Copilot style */
-body.ai-bot-conversations-page .ai-bot-conversations__input-wrapper {
-    background: #ffffff;
-    border: 1px solid #e0e0e0;
-    border-radius: 24px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-    transition: all 0.2s ease;
-    padding: 16px 16px 52px 16px;
-    /* Extra bottom padding for buttons */
-    min-height: 120px;
-    position: relative;
-    display: block;
-    /* NOT flex */
-    box-sizing: border-box !important;
-    /* Prevent overflow on mobile by including padding in width */
-}
+    /* Borders & Backgrounds */
+    --vc-border: #e5e7eb;
+    --vc-border-soft: #d9dce3;
+    --vc-bg-subtle: #f8f9fc;
+    --vc-bg-hover: #f9fafb;
+    --vc-bg-glass: rgba(255, 255, 255, 0.85);
 
-/* Mobile: Anchor input box to bottom */
-@media (max-width: 767px) {
-    body.ai-bot-conversations-page .ai-bot-conversations__input-wrapper {
-        position: fixed !important;
-        bottom: 16px;
-        left: 14px;
-        /* Reduced from 16px for tighter fit */
-        right: 14px;
-        /* Reduced from 16px for tighter fit */
-        width: calc(100% - 28px);
-        /* Adjusted for new margins */
-        margin: 0;
-        z-index: 100;
-    }
-}
+    /* Enhanced Shadows */
+    --vc-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+    --vc-shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08);
+    --vc-shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.12);
+    --vc-shadow-glow: 0 4px 24px rgba(255, 122, 0, 0.2);
 
-/* Clean focus state */
-body.ai-bot-conversations-page .ai-bot-conversations__input-wrapper:focus-within {
-    border-color: var(--vc-orange);
-    box-shadow: 0 4px 12px rgba(229, 90, 42, 0.08);
+    /* Border Radius */
+    --vc-radius-sm: 8px;
+    --vc-radius-md: 12px;
+    --vc-radius-lg: 16px;
+    --vc-radius-pill: 999px;
 }
-
-/* Textarea - large and expandable */
-#ai-bot-conversations-input {
-    width: 100%;
-    border: 0;
-    background: transparent;
-    font-size: 15px;
-    line-height: 1.5;
-    color: #1a1a1a;
-    padding: 0;
-    outline: none;
-    resize: none;
-    min-height: 60px;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-}
-
-#ai-bot-conversations-input::placeholder {
-    color: #9ca3af;
-    font-weight: 400;
-    font-style: italic;
-}
-
-/* Buttons anchored to bottom corners - Option 5: Both Outlined (Minimal) */
-/* Using !important to override Discourse base theme styles */
-.ai-bot-upload-btn {
-    position: absolute;
-    bottom: 8px;
-    left: 8px;
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    border: 1.5px solid var(--vc-orange) !important;
-    background: transparent !important;
-    padding: 0 !important;
-    /* Remove default button padding */
-    display: flex !important;
-    /* Force flex instead of grid */
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    color: var(--vc-orange);
-}
-
-.ai-bot-upload-btn:hover {
-    background: rgba(229, 90, 42, 0.1) !important;
-    border-color: var(--vc-orange) !important;
-}
-
-/* Reset SVG icon styling that creates "button within button" effect */
-.ai-bot-upload-btn .d-icon,
-.ai-bot-upload-btn svg {
-    background: none !important;
-    background-color: transparent !important;
-    padding: 0 !important;
-    border-radius: 0 !important;
-    border: none !important;
-    margin: 0 !important;
-}
-
-/* Hide accessibility span that breaks centering */
-.ai-bot-upload-btn span {
+/* ============================================================================
+   FLOATING TOGGLE BUTTON - Chevron Style  (RIGHT chevron only)
+   This component owns ONLY the right chevron (#vc-sidebar-toggle), which opens
+   the AI Memories panel. The LEFT chevron lives in the sidebar-search component.
+   ============================================================================ */
+/* Hide by default everywhere */
+#vc-sidebar-toggle {
     display: none !important;
 }
 
-.ai-conversation-submit {
-    position: absolute;
-    bottom: 8px;
-    right: 8px;
+/* RIGHT toggle (AI Memories): visible ONLY on the AI conversations LISTING page
+   (all viewports). Hidden on chat detail (has-ai-bot-docked-composer) and elsewhere. */
+body.ai-bot-conversations-page #vc-sidebar-toggle {
+    display: flex !important;
+}
+
+/* When the right (AI Memories) sidebar is OPEN, hide the right chevron —
+   the panel has its own close (X). */
+body.vc-right-sidebar-open #vc-sidebar-toggle {
+    display: none !important;
+}
+
+/* Legacy decorative class, hidden */
+.right-chevron {
+    display: none;
+}
+#vc-sidebar-toggle {
+    position: fixed;
+    top: clamp(80px, 33vh, 360px);
+    top: clamp(80px, 33dvh, 360px);
+    right: 16px;
     width: 36px;
     height: 36px;
     border-radius: 50%;
-    border: 1.5px solid var(--vc-orange) !important;
-    background: #ffffff !important;
-    padding: 0 !important;
-    /* Remove default button padding */
-    color: var(--vc-orange) !important;
-    display: flex !important;
-    /* Force flex instead of grid */
+    background: linear-gradient(135deg, var(--vc-orange) 0%, #ff9640 100%);
+    border: none;
+    box-shadow:
+        0 4px 16px rgba(255, 122, 0, 0.35),
+        0 2px 8px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    z-index: 10100;
+    pointer-events: auto;
+    display: flex;
     align-items: center;
     justify-content: center;
+    transition: all 0.25s ease;
+    color: white;
+}
+
+#vc-sidebar-toggle:hover {
+    transform: scale(1.08);
+    box-shadow:
+        0 6px 24px rgba(255, 122, 0, 0.45),
+        0 3px 12px rgba(0, 0, 0, 0.15);
+}
+
+#vc-sidebar-toggle:active {
+    transform: scale(0.95);
+}
+
+/* Chevron styling - larger, bolder arrow */
+.vc-chevron {
+    font-size: 28px;
+    font-weight: 500;
+    line-height: 1;
+    color: white;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* When right sidebar is open, flip the right chevron to point outward (close). */
+body.vc-right-sidebar-open .vc-chevron {
+    transform: scaleX(-1);
+}
+
+body.vc-right-sidebar-open .vc-chevron {
+    transform: scaleX(-1);
+}
+
+/* ============================================================================
+   RIGHT SIDEBAR PANEL - Wider for Memories
+   ============================================================================ */
+
+#vc-right-sidebar {
+    position: fixed;
+    right: 0;
+    top: 0;
+    height: 100vh;
+    width: 380px;
+    background: linear-gradient(180deg, #ffffff 0%, #fefefe 100%);
+    border-left: 1px solid var(--vc-border);
+    box-shadow: -4px 0 32px rgba(0, 0, 0, 0.08);
+    transform: translateX(100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1050;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* Sidebar open state */
+body.vc-right-sidebar-open #vc-right-sidebar {
+    transform: translateX(0);
+}
+
+/* Sidebar Header */
+.vc-sidebar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--vc-border);
+    background: linear-gradient(90deg, rgba(255, 133, 51, 0.06) 0%, transparent 100%);
+    flex-shrink: 0;
+}
+
+.vc-sidebar-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--vc-text);
+    letter-spacing: -0.01em;
+}
+
+.vc-header-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.vc-sidebar-close {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    border: none;
+    background: transparent;
+    color: var(--vc-text-muted);
+    font-size: 1.4rem;
+    font-weight: 300;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s ease;
+}
+
+.vc-sidebar-close:hover {
+    background: var(--vc-bg-subtle);
+    color: var(--vc-orange);
+}
+
+
+/* ============================================================================
+   TOGGLE SWITCH - iOS Style
+   ============================================================================ */
+
+.vc-memory-toggle {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 24px;
+    cursor: pointer;
+}
+
+.vc-toggle-checkbox {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    position: absolute;
+}
+
+.vc-toggle-slider {
+    position: absolute;
+    inset: 0;
+    background: #ccd0d5;
+    border-radius: 24px;
+    transition: all 0.25s ease;
+}
+
+.vc-toggle-slider::before {
+    content: "";
+    position: absolute;
+    left: 2px;
+    top: 2px;
+    width: 20px;
+    height: 20px;
+    background: white;
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+    transition: transform 0.25s ease;
+}
+
+.vc-toggle-checkbox:checked+.vc-toggle-slider {
+    background: linear-gradient(135deg, var(--vc-orange) 0%, #ff9640 100%);
+}
+
+.vc-toggle-checkbox:checked+.vc-toggle-slider::before {
+    transform: translateX(20px);
+}
+
+.vc-toggle-checkbox:focus+.vc-toggle-slider {
+    box-shadow: 0 0 0 3px var(--vc-orange-alpha-30);
+}
+
+/* ============================================================================
+   SIDEBAR CONTENT AREA - Scrollable
+   ============================================================================ */
+
+.vc-sidebar-content {
+    flex: 1;
+    padding: 16px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.vc-sidebar-content.vc-memories-disabled {
+    justify-content: center;
+    align-items: center;
+}
+
+/* ============================================================================
+   MEMORIES UI - Card Layout
+   ============================================================================ */
+
+.vc-memories-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    height: 100%;
+}
+
+.vc-memories-loading,
+.vc-memories-empty,
+.vc-memories-unavailable {
+    color: var(--vc-text-light);
+    font-size: 0.9rem;
+    font-style: italic;
+    text-align: center;
+    padding: 24px 16px;
+}
+
+.vc-memories-unavailable {
+    background: var(--vc-bg-subtle);
+    border-radius: var(--vc-radius-md);
+    border: 1px dashed var(--vc-border);
+}
+
+/* Paused State */
+.vc-memories-paused {
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.vc-paused-message {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--vc-text-muted);
+    margin: 0 0 8px;
+}
+
+.vc-paused-hint {
+    font-size: 0.85rem;
+    color: var(--vc-text-light);
+    margin: 0;
+}
+
+/* Add Memory Form - NOW AT TOP */
+.vc-add-memory {
+    padding: 14px;
+    background: var(--vc-bg-subtle);
+    border: 1px solid var(--vc-border);
+    border-radius: var(--vc-radius-md);
+    flex-shrink: 0;
+}
+
+.vc-add-memory-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--vc-text);
+    margin-bottom: 10px;
+}
+
+.vc-memory-key-input,
+.vc-memory-value-input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--vc-border);
+    border-radius: var(--vc-radius-sm);
+    font-size: 0.9rem;
+    margin-bottom: 8px;
+    box-sizing: border-box;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.vc-memory-key-input:focus,
+.vc-memory-value-input:focus {
+    outline: none;
+    border-color: var(--vc-orange);
+    box-shadow: 0 0 0 3px var(--vc-orange-alpha-18);
+}
+
+.vc-memory-save-btn {
+    width: 100%;
+    padding: 10px 16px;
+    background: linear-gradient(135deg, var(--vc-orange) 0%, #ff9640 100%);
+    color: white;
+    border: none;
+    border-radius: var(--vc-radius-sm);
+    font-size: 0.9rem;
+    font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
 }
 
-.ai-conversation-submit:hover {
-    background: var(--vc-orange) !important;
-    color: #ffffff !important;
+.vc-memory-save-btn:hover {
+    box-shadow: var(--vc-shadow-glow);
+    transform: translateY(-1px);
 }
 
-/* Make SVG icon white on hover - high specificity to override Discourse base theme */
-/* Must target use and path elements as they have hardcoded fill */
-body.has-ai-conversations-sidebar .ai-bot-conversations__input-wrapper .ai-conversation-submit:hover .d-icon,
-body.has-ai-conversations-sidebar .ai-bot-conversations__input-wrapper .ai-conversation-submit:hover svg,
-body.has-ai-conversations-sidebar .ai-bot-conversations__input-wrapper .ai-conversation-submit:hover svg use,
-body.has-ai-conversations-sidebar .ai-bot-conversations__input-wrapper .ai-conversation-submit:hover svg path {
-    color: #ffffff !important;
-    fill: #ffffff !important;
-    stroke: #ffffff !important;
+.vc-memory-save-btn:active {
+    transform: translateY(0);
 }
 
-/* Reset SVG icon styling for submit button */
-.ai-conversation-submit .d-icon,
-.ai-conversation-submit svg {
-    background: none !important;
-    background-color: transparent !important;
-    padding: 0 !important;
-    border-radius: 0 !important;
-    border: none !important;
-    margin: 0 !important;
+/* Memory Cards - Scrollable List */
+.vc-memories-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 1;
+    overflow-y: auto;
+    max-height: calc(100vh - 320px);
+    padding-right: 4px;
 }
+
+/* Custom Scrollbar for Memory List */
+.vc-memories-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.vc-memories-list::-webkit-scrollbar-track {
+    background: var(--vc-bg-subtle);
+    border-radius: 3px;
+}
+
+.vc-memories-list::-webkit-scrollbar-thumb {
+    background: var(--vc-border-soft);
+    border-radius: 3px;
+    transition: background 0.2s ease;
+}
+
+.vc-memories-list::-webkit-scrollbar-thumb:hover {
+    background: var(--vc-text-light);
+}
+
+.vc-memory-card {
+    position: relative;
+    background: white;
+    border: 1px solid var(--vc-border);
+    border-radius: var(--vc-radius-md);
+    padding: 12px 40px 12px 14px;
+    box-shadow: var(--vc-shadow-sm);
+    transition: all 0.15s ease;
+    flex-shrink: 0;
+}
+
+.vc-memory-card:hover {
+    border-color: var(--vc-orange-alpha-30);
+    box-shadow: var(--vc-shadow-md);
+}
+
+.vc-memory-key {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--vc-orange);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    margin-bottom: 4px;
+}
+
+.vc-memory-value {
+    font-size: 0.95rem;
+    color: var(--vc-text);
+    line-height: 1.4;
+    word-break: break-word;
+}
+
+.vc-memory-delete {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    border: none;
+    background: transparent;
+    color: var(--vc-text-light);
+    font-size: 1.2rem;
+    font-weight: 300;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s ease;
+    opacity: 0.6;
+}
+
+.vc-memory-delete:hover {
+    background: #fee2e2;
+    color: #dc2626;
+    opacity: 1;
+}
+
+
+
+
 
 /* Hide accessibility span that breaks centering */
 .ai-conversation-submit span {
