@@ -677,6 +677,350 @@ body.has-ai-conversations-sidebar .ai-bot-conversations__input-wrapper .ai-conve
     border: none !important;
     margin: 0 !important;
 }
+/* Hide accessibility span that breaks centering */
+.ai-conversation-submit span {
+    display: none !important;
+}
+
+.ai-conversation-submit:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: #e0e0e0;
+}
+
+/* ============================================================================
+   MOBILE RESPONSIVE
+   ============================================================================ */
+
+@media (max-width: 768px) {
+    #vc-sidebar-toggle {
+        right: 12px;
+        width: 36px;
+        height: 36px;
+    }
+
+    .vc-chevron {
+        font-size: 18px;
+    }
+
+    #vc-right-sidebar {
+        width: 100%;
+        max-width: 380px;
+    }
+
+    /* Hide right toggle when sidebar is open on mobile */
+    body.vc-right-sidebar-open #vc-sidebar-toggle {
+        display: none !important;
+    }
+
+    .vc-memories-list {
+        max-height: calc(100vh - 360px);
+    }
+}
+
+@media (max-width: 480px) {
+    #vc-right-sidebar {
+        max-width: 100%;
+    }
+
+    .vc-memory-toggle {
+        width: 48px;
+        height: 28px;
+    }
+
+    .vc-toggle-slider::before {
+        width: 24px;
+        height: 24px;
+    }
+
+    .vc-toggle-checkbox:checked+.vc-toggle-slider::before {
+        transform: translateX(20px);
+    }
+
+    .vc-memories-list {
+        max-height: calc(100vh - 380px);
+    }
+}
+
+/* ============================================================================
+   DOCKED COMPOSER (chat detail page) — body.has-ai-bot-docked-composer
+   The chat detail page uses Discourse's docked composer with a ProseMirror
+   contenteditable, NOT the textarea-based composer of the listing page.
+   These rules quarantine it from the main theme's magenta je-focus leak,
+   give it a real surface, and brand the +/send buttons.
+   ============================================================================ */
+
+body.has-ai-bot-docked-composer {
+
+    /* --- Quarantine: kill main theme's magenta ring + browser default outline --- */
+    .d-editor-textarea-wrapper.in-focus {
+        box-shadow: none !important;
+    }
+
+    .d-editor-textarea-wrapper .ProseMirror {
+        outline: none !important;
+    }
+
+    /* --- Composer surface (the bottom dock) --- */
+    .ai-bot-docked-composer {
+        background: #ffffff;
+        border-top: 1px solid var(--vc-border);
+        box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.04);
+
+        .docked-composer__inner {
+            padding: 12px 16px;
+            max-width: 820px;
+            margin: 0 auto;
+        }
+    }
+
+    /* --- THE VISIBLE FRAME lives on .d-editor-textarea-column ---
+       The main theme paints this with --d-input-border-radius (50px pill) and a
+       blueish bg, which leaks past our wrapper. We claim it so toolbar + wrap +
+       buttons all share ONE clean rounded white frame regardless of toolbar state. */
+    .d-editor-textarea-column {
+        background: #ffffff !important;
+        border: 1px solid var(--vc-border) !important;
+        border-radius: 24px !important;
+        padding: 0 !important;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        overflow: hidden;
+        position: relative;
+    }
+    /* Focus ring lives on the column now (uses :focus-within) */
+    .d-editor-textarea-column:focus-within {
+        border-color: var(--vc-orange) !important;
+        box-shadow: 0 0 0 3px var(--vc-orange-alpha-18) !important;
+    }
+
+    /* --- Wrapper inside is just a transparent passthrough --- */
+    .d-editor-textarea-wrapper {
+        background: transparent !important;
+        border: none !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+    }
+
+    /* --- Toolbar (when expanded): transparent, sits inside the column frame --- */
+    .d-editor-button-bar__wrap {
+        background: transparent !important;
+        border: none !important;
+        border-radius: 0 !important;
+        margin: 0 !important;
+        padding: 8px 12px 4px !important;
+    }
+
+    .d-editor-button-bar {
+        background: transparent !important;
+        border: none !important;
+    }
+
+    /* ProseMirror text area itself — comfortable padding */
+    .d-editor-textarea-wrapper .ProseMirror {
+        padding: 12px 56px 12px 56px;
+        min-height: 48px;
+        font-size: 15px;
+        line-height: 1.5;
+        color: #1a1a1a;
+    }
+
+    /* --- + (toolbar toggle) button: outlined orange circle, bottom-left --- */
+    .ai-bot-docked-composer__toolbar-toggle {
+        position: absolute;
+        bottom: 8px;
+        left: 8px;
+        width: 36px !important;
+        height: 36px !important;
+        border-radius: 50% !important;
+        border: 1.5px solid var(--vc-orange) !important;
+        background: transparent !important;
+        color: var(--vc-orange) !important;
+        padding: 0 !important;
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+
+        &:hover {
+            background: var(--vc-orange-alpha-08) !important;
+            border-color: var(--vc-orange) !important;
+        }
+
+        .d-icon,
+        svg {
+            background: none !important;
+            background-color: transparent !important;
+            padding: 0 !important;
+            border-radius: 0 !important;
+            border: none !important;
+            margin: 0 !important;
+            color: var(--vc-orange) !important;
+        }
+
+        span { display: none !important; }
+    }
+
+    /* --- Send (paper-plane) button: outlined orange circle, bottom-right, fills on hover --- */
+    .docked-composer__submit-btn:not(.ai-bot-docked-composer__toolbar-toggle) {
+        position: absolute;
+        bottom: 8px;
+        right: 8px;
+        width: 36px !important;
+        height: 36px !important;
+        border-radius: 50% !important;
+        border: 1.5px solid var(--vc-orange) !important;
+        background: #ffffff !important;
+        color: var(--vc-orange) !important;
+        padding: 0 !important;
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+
+        &:hover {
+            background: var(--vc-orange) !important;
+            color: #ffffff !important;
+
+            .d-icon,
+            svg,
+            svg use,
+            svg path {
+                color: #ffffff !important;
+                fill: #ffffff !important;
+                stroke: #ffffff !important;
+            }
+        }
+
+        .d-icon,
+        svg {
+            background: none !important;
+            background-color: transparent !important;
+            padding: 0 !important;
+            border-radius: 0 !important;
+            border: none !important;
+            margin: 0 !important;
+            color: var(--vc-orange) !important;
+        }
+
+        span { display: none !important; }
+    }
+
+    /* --- Resize handle: subtle, brand-tinted on hover --- */
+    .docked-composer__resize-handle {
+        opacity: 0.5;
+        transition: opacity 0.2s ease;
+
+        &:hover {
+            opacity: 1;
+            background: var(--vc-orange-alpha-30);
+        }
+    }
+}
+
+/* Mobile tweaks for docked composer */
+@media (max-width: 767px) {
+    body.has-ai-bot-docked-composer {
+        .ai-bot-docked-composer .docked-composer__inner {
+            padding: 8px 10px 10px;
+        }
+
+        .d-editor-textarea-wrapper .ProseMirror {
+            padding: 12px 52px;
+            font-size: 16px; /* prevents iOS zoom on focus */
+        }
+    }
+}
+
+/* ============================================================================
+   AI BOT PM CHAT DETAIL PAGE — Overall page polish
+   Targets the chat-detail page (`body.has-ai-bot-docked-composer`):
+   - Unifies the bluish #main-outlet bg with the white message surfaces
+   - Widens the conversations sidebar so titles are readable
+   - Subtle card-like message separation, brand-tinted current-user bubble
+   - Tight gutters / breathing room around the post stack
+   ============================================================================ */
+
+body.has-ai-bot-docked-composer {
+
+    /* --- Unify the page background. Was #F9FCFF (bluish), now clean white. --- */
+    #main-outlet,
+    #main-outlet-wrapper,
+    .topic-area,
+    section.topic-area,
+    .full-width {
+        background: #ffffff !important;
+    }
+
+    /* --- Widen the Discourse sidebar so conversation titles aren't truncated.
+       Discourse uses --d-sidebar-width (default 14em ~224px). Bump to 18em (~288px). --- */
+    --d-sidebar-width: 18em;
+
+    .sidebar-wrapper {
+        width: 18em !important;
+    }
+
+    /* Let the section content fill the wider space */
+    .sidebar-container,
+    .sidebar-sections,
+    .sidebar-section-wrapper,
+    .sidebar-section-content,
+    .sidebar-section-link-wrapper,
+    .sidebar-section-link {
+        max-width: none !important;
+    }
+
+    /* Truncation: still ellipsis if title overflows, but with much more room */
+    .sidebar-section-link-content-text {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* --- Message cards: subtle separator on now-white surface --- */
+    .topic-post {
+        border-bottom: 1px solid var(--vc-border);
+        padding-block: 12px;
+    }
+    .topic-post:last-of-type {
+        border-bottom: none;
+    }
+
+    /* --- User's own PM message bubble: soften the default Discourse blue tint
+       into a brand-matched warm cream so it harmonizes with the orange palette --- */
+    article.topic-post.user-self .topic-body,
+    article.topic-post.current-user-post .topic-body,
+    .regular.user-self .topic-body {
+        background: rgba(255, 245, 230, 0.6) !important;
+        border-radius: var(--vc-radius-md, 12px);
+    }
+
+    /* --- Topic timeline gutter: lighter, less competing --- */
+    .topic-timeline {
+        background: transparent !important;
+    }
+
+    /* --- Footer-area buttons (Invite / Share AI conversation) on white bg --- */
+    .topic-footer-buttons {
+        background: transparent !important;
+    }
+
+    /* --- Soft shadow on docked composer to lift it from now-white page --- */
+    .ai-bot-docked-composer {
+        box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.06) !important;
+    }
+}
+
+/* Mobile: keep the sidebar widening but allow Discourse's slide-out behavior */
+@media (max-width: 767px) {
+    body.has-ai-bot-docked-composer {
+        --d-sidebar-width: 85vw;
+
+        .sidebar-wrapper {
+            width: 85vw !important;
+            max-width: 320px !important;
+        }
+    }
+}
 
 
 
