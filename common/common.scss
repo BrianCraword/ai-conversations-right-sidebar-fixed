@@ -1,3 +1,17 @@
+/* ----------------------------------------------------------------------------
+   STACKING-CONTEXT REPAIR — agent/persona selector tap target
+   The AI conversations content wrapper (.ai-bot-conversations__content-wrapper)
+   carries a translateY transform, which creates a stacking context that paints
+   the (transparent) wrapper box ABOVE the persona dropdown. On touch, taps land
+   on the wrapper instead of the dropdown's header, making model selection feel
+   frozen. Lifting the dropdown into its own positioned layer restores the tap
+   target. Verified live: topmost element at the header center returns to the
+   dropdown after this rule. (z-index:1 is sufficient.)
+   ---------------------------------------------------------------------------- */
+.ai-bot-conversations-page .agent-llm-selector__selection-wrapper {
+    position: relative;
+    z-index: 1;
+}
 /* ============================================================================
    AI CONVERSATIONS RIGHT SIDEBAR - THEME COMPONENT
    Adds collapsible right sidebar with AI Memories + polished UI enhancements
