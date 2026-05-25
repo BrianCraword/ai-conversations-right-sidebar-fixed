@@ -22,7 +22,7 @@ body.ai-bot-conversations-page {
     overscroll-behavior-y: none !important;
 
     /* Disable pull-to-refresh if it causes unwanted shifts */
-/*     touch-action: pan-x pan-y;
+   touch-action: pan-x pan-y;
 }
 
 body.ai-bot-conversations-page {
@@ -74,7 +74,6 @@ body.ai-bot-conversations-page {
     --vc-radius-lg: 16px;
     --vc-radius-pill: 999px;
 }
-*/
 /* ============================================================================
    FLOATING TOGGLE BUTTON - Chevron Style  (RIGHT chevron only)
    This component owns ONLY the right chevron (#vc-sidebar-toggle), which opens
