@@ -74,7 +74,7 @@ body.ai-bot-conversations-page {
     --vc-radius-lg: 16px;
     --vc-radius-pill: 999px;
 }
-
+*/
 /* ============================================================================
    FLOATING TOGGLE BUTTON - Chevron Style  (RIGHT chevron only)
    This component owns ONLY the right chevron (#vc-sidebar-toggle), which opens
@@ -790,7 +790,6 @@ body.has-ai-bot-docked-composer {
         overflow: hidden;
         position: relative;
     }
-
     /* Focus ring lives on the column now (uses :focus-within) */
     .d-editor-textarea-column:focus-within {
         border-color: var(--vc-orange) !important;
